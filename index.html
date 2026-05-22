@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Pribadi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    header {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .hero {
+      max-width: 900px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .profile-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      transition: 0.4s;
+    }
+
+    .profile-img:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    h1 {
+      margin-top: 25px;
+      font-size: 3rem;
+    }
+
+    .typing {
+      color: #38bdf8;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      min-height: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      background: #38bdf8;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: white;
+      color: #0f172a;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(56,189,248,0.4);
+    }
+
+    section {
+      padding: 80px 10%;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-align: center;
+      color: #38bdf8;
+    }
+
+    .biodata {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .card {
+      width: 260px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+      backdrop-filter: blur(12px);
+      border-radius: 25px;
+      padding: 30px 25px;
+      transition: 0.5s ease;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: rgba(56,189,248,0.2);
+      border-radius: 50%;
+      top: -40px;
+      right: -40px;
+      transition: 0.5s;
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+    }
+
+    .card:hover::before {
+      transform: scale(1.5);
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      color: #7dd3fc;
+      font-size: 1.3rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card p {
+      position: relative;
+      z-index: 2;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+    }
+
+    .karya-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .karya-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: 0.4s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .karya-card:hover {
+      transform: scale(1.03);
+    }
+
+    .karya-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .karya-content {
+      padding: 20px;
+    }
+
+    .karya-content h3 {
+      margin-bottom: 10px;
+    }
+
+    .karya-content a {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .socials a {
+      text-decoration: none;
+      color: white;
+      background: rgba(255,255,255,0.1);
+      padding: 15px 25px;
+      border-radius: 15px;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .socials a:hover {
+      background: #38bdf8;
+      transform: translateY(-5px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: rgba(0,0,0,0.3);
+      margin-top: 50px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scroll-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #38bdf8;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      font-size: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="hero">
+      <img src="https://uploads.onecompiler.io/4359cvpkx/435b6yzcb/Raffles.jpeg" alt="Foto Profil" class="profile-img">
+      <h1>Rafflesia Henri Donavan</h1>
+      <div class="typing"></div>
+      <a href="#biodata" class="btn" id="smoothBtn">Lihat Profil</a>
+    </div>
+  </header>
+
+  <section id="biodata">
+    <h2 class="section-title">Biodata</h2>
+
+    <div class="biodata">
+      <div class="card">
+        <h3>Nama</h3>
+        <p>Rafflesia Henri Donavan</p>
+      </div>
+
+      <div class="card">
+        <h3>Tempat Tanggal Lahir</h3>
+        <p>Madiun, 5 Mei 2008</p>
+      </div>
+
+      <div class="card">
+        <h3>Pendidikan</h3>
+        <p>Siswa SMAN 6 Madiun</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="karya">
+    <h2 class="section-title">Karya Saya</h2>
+
+    <div class="karya-container">
+
+      <div class="karya-card">
+        <img src="https://uploads.onecompiler.io/4359cvpkx/435b6yzcb/Semesta%20Ddibalik%20Larikan%20Canting.png" alt="Karya 1">
+        <div class="karya-content">
+          <h3>Semesta di Balik Larikan Canting</h3>
+          <p>Kisah Pejuangan pelestarian budaya dalam mistis.</p>
+          <a href="https://drive.google.com/file/d/1TQOtUsspuFowRPf3CRr-odHjnrKyd_Lk/view" target="_blank">Lihat →</a> 
+        </div>
+      </div>
+
+      <div class="karya-card">
+        <img src="https://uploads.onecompiler.io/4359cvpkx/435b6yzcb/Purnama%20Yang%20Tak%20Lagi%20Sama.png" alt="Karya 2">
+        <div class="karya-content">
+          <h3>Purnama Yang Tak Lagi Sama</h3>
+          <p>520 Hari tanpa suara dan 1 hari yang membuat terluka.</p>
+          <a href="https://drive.google.com/file/d/1pxr2qyoUEfH9qjjfu5VTrtfeaN3gIZaS/view" target="_blank">Lihat →</a> 
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="sosial">
+    <h2 class="section-title">Media Sosial</h2>
+
+    <div class="socials">
+      <a href="https://www.instagram.com/rafflesiahenridonavan?igsh=Z2kyanZrOTRvNnYy" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@rafflesia_h_d?_r=1&_t=ZS-96ZhKIypPso" target="_blank">TikTok</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Rafflesia Henri Donavan | Personal Website</p>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop">↑</button>
+
+  <script>
+    const typingText = [
+      "Acta non verba",
+      "Amor vincit omnia",
+      "Fons vitae caritas",
+      "Morior invictus"
+    ];
+
+    let count = 0;
+    let index = 0;
+    let currentText = "";
+    let letter = "";
+
+    (function type() {
+      if (count === typingText.length) {
+        count = 0;
+      }
+
+      currentText = typingText[count];
+      letter = currentText.slice(0, ++index);
+
+      document.querySelector('.typing').textContent = letter;
+
+      if (letter.length === currentText.length) {
+        count++;
+        index = 0;
+        setTimeout(type, 1200);
+      } else {
+        setTimeout(type, 120);
+      }
+    })();
+
+    const scrollTopBtn = document.getElementById('scrollTop');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollTopBtn.style.display = 'block';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    document.getElementById('smoothBtn').addEventListener('click', function(e){
+      e.preventDefault();
+      const target = document.querySelector('#biodata');
+
+      window.scrollTo({
+        top: target.offsetTop - 30,
+        behavior: 'smooth'
+      });
+
+      target.animate([
+        { opacity: 0.2, transform: 'translateY(40px)' },
+        { opacity: 1, transform: 'translateY(0px)' }
+      ], {
+        duration: 900,
+        easing: 'ease'
+      });
+    });
+  </script>
+
+</body>
+</html>
