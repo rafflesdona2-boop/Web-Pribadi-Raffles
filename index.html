@@ -107,10 +107,10 @@ details.ds{margin-top:18px;border:1px solid var(--bd);border-radius:10px;padding
 <section class="v card" id="v5" style="max-width:720px;margin:60px auto"><h2 style="margin-top:0">Hasil Simulasi</h2><div id="hs"></div><button class="bt" id="ul" style="margin-top:18px">Kerjakan mata uji lain</button></section>
 
 <section class="v card" id="v8" style="max-width:440px;margin:60px auto"><h2 style="margin:0 0 4px">Login Admin</h2><p class="sm">Khusus pengelola simulasi. Peserta tidak perlu masuk di sini.</p>
-<div class="f">👤<input id="adU" placeholder="Username admin" autocomplete="off"></div>
-<div class="f">🔒<input id="adP" type="password" placeholder="Password admin"></div>
-<div class="err" id="adE"></div><button class="bt w" id="adGo">Masuk sebagai Admin</button>
-<button class="bt w" id="adBack" style="background:transparent;color:var(--bt);border:2px solid var(--bt)">← Kembali ke login peserta</button></section>
+<form id="adF" autocomplete="on" onsubmit="return false"><div class="f">👤<input id="adU" name="username" type="text" placeholder="Username admin" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+<div class="f">🔒<input id="adP" name="password" type="password" placeholder="Password admin" autocomplete="current-password"></div>
+<div class="err" id="adE"></div><button class="bt w" id="adGo" type="submit">Masuk sebagai Admin</button>
+<button class="bt w" id="adBack" type="button" style="background:transparent;color:var(--bt);border:2px solid var(--bt)">← Kembali ke login peserta</button></form></section>
 
 <section class="v card" id="v7"><div class="tr"><div><h3 style="font-size:26px">Panel Admin</h3><div class="sm" id="adSt"></div></div>
 <div class="pl"><button class="bb" id="adRef">⟳ Muat ulang</button><button class="bb" id="adCsv">⬇ Ekspor CSV</button><button class="bb" id="adOut" style="background:#d9475b;border-color:#d9475b">Keluar</button></div></div>
@@ -232,11 +232,10 @@ b.disabled=!!x;b.classList.toggle('dn',!!x);b.querySelector('small').textContent
 const ADMIN_UH='1q5gckztd8t',ADMIN_PH='1357tl7vtty',A={all:{}};
 $('#la').onclick=()=>{$('#adE').textContent='';show('v8')};
 $('#adBack').onclick=()=>show('v1');
-$('#adP').onkeydown=e=>{if(e.key=='Enter')$('#adGo').click()};
 $('#adGo').onclick=async()=>{const u=$('#adU').value.trim().toLowerCase(),p=$('#adP').value,e=$('#adE');e.textContent='';
 if(!u||!p){e.textContent='Username dan password admin wajib diisi.';return}
 let c;try{c=await DB.cfgGet()}catch(x){e.textContent='Database tidak dapat dihubungi.';return}
-if(!(HS(u)===ADMIN_UH&&(c&&c.h?c.h===HS(p):HS(p)===ADMIN_PH))){e.textContent='Username atau password admin salah.';return}
+if(!(HS(u)===ADMIN_UH&&HS(p)===ADMIN_PH)){e.textContent='Username atau password admin salah.';return}
 $('#adP').value='';S.adm=1;$('#who').textContent='ADMIN - PANEL';show('v7');AR()};
 $('#adOut').onclick=()=>{S.adm=0;$('#who').textContent='';show('v1')};
 $('#adRef').onclick=()=>AR();
@@ -302,7 +301,7 @@ if(location.hash)onhashchange();
     }).catch(function(){mode='gagal'});
   }
   var stat=document.createElement('div');
-  stat.style.cssText='position:fixed;left:6px;bottom:22px;z-index:9998;font:11px sans-serif;color:#888;opacity:.7;padding:6px 4px;cursor:pointer;';
+  stat.style.cssText='position:fixed;left:6px;bottom:52px;z-index:9998;font:11px sans-serif;color:#888;opacity:.7;padding:6px 4px;cursor:pointer;';
   stat.onclick=function(){
     var k='zz_tes';
     fetch(URL_DB+'/'+k+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({tes:Date.now()})})
@@ -312,8 +311,8 @@ if(location.hash)onhashchange();
     .catch(function(e){mode='gagal';banner('Database error: '+(e&&e.message||e),false)});
   };
   document.body.appendChild(stat);
-  var link=document.createElement('a');
-  link.style.cssText='position:fixed;left:10px;bottom:8px;z-index:9998;font:12px sans-serif;color:#888;opacity:.5;cursor:pointer;text-decoration:underline;';
+  var link=document.createElement('button');link.type='button';
+  link.style.cssText='position:fixed;left:8px;bottom:8px;z-index:9999;font:13px sans-serif;color:#555;background:#fffd;border:1px solid #aaa;border-radius:8px;opacity:.9;cursor:pointer;padding:10px 14px;touch-action:manipulation;';
   link.onclick=function(){
     var adm=false;try{adm=!!S.adm}catch(e){}
     document.getElementById(adm?'adOut':'la').click();
