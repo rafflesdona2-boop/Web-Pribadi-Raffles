@@ -283,6 +283,21 @@ if(location.hash)onhashchange();
   // Fungsi bantu untuk global
   window.db = database;
 </script>
+<!-- ===== SAMBUTAN AWAL (3 detik) ===== -->
+<div id="splashWelcome" style="position:fixed;inset:0;z-index:10001;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#0b3d91,#1a73e8);color:#fff;font-family:sans-serif;text-align:center;padding:24px;transition:opacity .5s">
+<div style="font-size:18px;opacity:.9">Selamat Datang di</div>
+<div style="font-size:40px;font-weight:700;letter-spacing:.5px">RaffEduMetric</div>
+</div>
+<script>
+(function(){
+  var sp=document.getElementById('splashWelcome');
+  setTimeout(function(){
+    try{show('v1')}catch(e){}
+    sp.style.opacity='0';
+    setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp)},500);
+  },3000);
+})();
+</script>
 <!-- ===== STATUS DATABASE & TOMBOL LOGIN ADMIN (kiri bawah) ===== -->
 <script>
 (function(){
