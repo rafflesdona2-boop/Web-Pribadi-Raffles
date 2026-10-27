@@ -262,7 +262,7 @@ $('#ul').onclick=()=>{LG({tahap:'Memilih mata uji'});S.mp=null;S.ok=0;S.fin=0;S.
 /* ================= DATABASE ================= */
 const DB={
  cfg(){return(CLOUD_URL||'').trim().replace(/\/+$/,'')},
- async req(path,method='GET',body){const r=await fetch(this.cfg()+'/'+path+'.json',{method,headers:body!==undefined?{'Content-Type':'application/json'}:undefined,body:body!==undefined?JSON.stringify(body):undefined});if(!r.ok)throw new Error('Database '+r.status);return r.json()},
+ async req(path,method='GET',body){const ac=typeof AbortController!='undefined'?new AbortController():null,tm=ac?setTimeout(()=>ac.abort(),12000):0;try{const r=await fetch(this.cfg()+'/'+path+'.json',{method,signal:ac?ac.signal:undefined,headers:body!==undefined?{'Content-Type':'application/json'}:undefined,body:body!==undefined?JSON.stringify(body):undefined});if(!r.ok)throw new Error('Database '+r.status);return await r.json()}finally{clearTimeout(tm)}},
  loc(){try{return JSON.parse(localStorage.getItem('tkaDB')||'{}')}catch(e){return{}}},
  mut(f){const o=this.loc();o.peserta=o.peserta||{};f(o);localStorage.setItem('tkaDB',JSON.stringify(o))},
  async all(){return this.cfg()?(await this.req('peserta'))||{}:this.loc().peserta||{}},
@@ -488,6 +488,75 @@ if(location.hash)onhashchange();
     stat.textContent='Database: '+(mode==='online'?'tersambung':mode==='gagal'?'BELUM tersambung (cek Rules)':'menyambung...')+' \u2014 ketuk untuk tes';
   }
   cek();setInterval(function(){paint()},1000);setInterval(cek,30000);paint();
+})();
+</script>
+<!-- ===== MASKOT "TIKA": penyemangat & reaksi skor ===== -->
+<style>
+#mk{position:fixed;right:14px;bottom:14px;z-index:8;display:none;align-items:flex-end;gap:8px;flex-direction:row-reverse;pointer-events:none}
+body.mk-on #mk{display:flex}body.mk-on #v4.on{margin-bottom:96px}
+#mk .av{position:relative;width:78px;height:78px;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 4px 6px #0003);animation:mkf 3s ease-in-out infinite}
+#mk .av svg{width:100%;height:100%;display:block}
+#mk .tg{position:absolute;top:-4px;left:-4px;width:22px;height:22px;border-radius:50%;border:0;background:#0f3b82;color:#fff;font:700 13px/22px sans-serif;padding:0;cursor:pointer;opacity:.85}
+#mk .bb2{pointer-events:auto;max-width:230px;background:#fff;color:#222;border:2px solid #0a7be0;border-radius:14px 14px 4px 14px;padding:9px 12px;margin-bottom:26px;font:600 13px/1.4 "Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 6px 18px #0002;opacity:0;transform:translateY(6px) scale(.96);transition:opacity .25s,transform .25s;visibility:hidden}
+#mk .bb2.on{opacity:1;transform:none;visibility:visible}
+#mk.mini .av{width:46px;height:46px}#mk.mini .bb2{display:none}
+@keyframes mkf{50%{transform:translateY(-5px)}}
+@keyframes mkw{to{transform:rotate(-30deg)}}@keyframes mkw2{to{transform:rotate(30deg)}}
+.mkv .wl,.mkv .wr{transform-box:fill-box;transform-origin:50% 0}
+.mkv[data-mood=cheer] .wl{animation:mkw .45s ease-in-out infinite alternate}
+.mkv[data-mood=cheer] .wr{animation:mkw2 .45s ease-in-out infinite alternate}
+.mkv [data-m]{display:none}
+.mkv[data-mood=happy] [data-m~=happy],.mkv[data-mood=cheer] [data-m~=cheer],.mkv[data-mood=worry] [data-m~=worry],.mkv[data-mood=proud] [data-m~=proud],.mkv[data-mood=sad] [data-m~=sad]{display:inline}
+.mk-res{display:flex;align-items:center;gap:14px;background:#e7f1ff;border:1px solid #bcd5f5;border-radius:12px;padding:12px 16px;margin:10px 0 14px;color:#0f3b82;font-weight:600;line-height:1.45}
+.mk-res svg{width:86px;height:86px;flex:none;animation:mkf 3s ease-in-out infinite}
+@media(max-width:600px){#mk{right:8px;bottom:8px}#mk .av{width:60px;height:60px}#mk .bb2{max-width:185px;font-size:12px}}
+</style>
+<script>
+(function(){
+var SV='<svg class="mkv" data-mood="happy" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><ellipse class="wl" cx="17" cy="66" rx="8" ry="16" fill="#0f3b82"/><ellipse class="wr" cx="83" cy="66" rx="8" ry="16" fill="#0f3b82"/><ellipse cx="50" cy="62" rx="34" ry="32" fill="#1650a8"/><ellipse cx="50" cy="70" rx="21" ry="21" fill="#e7f1ff"/><path d="M22 40L28 20L42 32Z" fill="#0f3b82"/><path d="M78 40L72 20L58 32Z" fill="#0f3b82"/><path d="M20 30L50 15L80 30L50 42Z" fill="#0b2a63"/><rect x="38" y="38" width="24" height="7" fill="#0b2a63"/><line x1="80" y1="30" x2="84" y2="44" stroke="#e8b923" stroke-width="2"/><circle cx="84" cy="46" r="3" fill="#e8b923"/><circle cx="37" cy="58" r="10" fill="#fff"/><circle cx="63" cy="58" r="10" fill="#fff"/>'+
+'<g data-m="happy cheer worry sad"><circle cx="38" cy="59" r="5" fill="#222"/><circle cx="62" cy="59" r="5" fill="#222"/><circle cx="40" cy="57" r="1.8" fill="#fff"/><circle cx="64" cy="57" r="1.8" fill="#fff"/></g>'+
+'<g data-m="proud" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"><path d="M30 60Q37 51 44 60"/><path d="M56 60Q63 51 70 60"/></g>'+
+'<g data-m="worry sad" stroke="#0b2a63" stroke-width="2.6" stroke-linecap="round"><line x1="27" y1="49" x2="44" y2="45"/><line x1="73" y1="49" x2="56" y2="45"/></g>'+
+'<path d="M45 67L55 67L50 75Z" fill="#e8b923"/>'+
+'<path data-m="happy" d="M42 78Q50 84 58 78" fill="none" stroke="#0f3b82" stroke-width="2.4" stroke-linecap="round"/>'+
+'<ellipse data-m="cheer" cx="50" cy="80" rx="6" ry="5" fill="#d9475b"/>'+
+'<path data-m="proud" d="M40 77Q50 89 60 77Z" fill="#d9475b"/>'+
+'<path data-m="worry sad" d="M43 82Q50 76 57 82" fill="none" stroke="#0f3b82" stroke-width="2.4" stroke-linecap="round"/>'+
+'<path data-m="worry" d="M80 46Q85 55 80 58Q75 55 80 46Z" fill="#6cc7ff"/><path data-m="sad" d="M31 69Q35 76 31 78Q27 76 31 69Z" fill="#6cc7ff"/>'+
+'<g data-m="cheer proud" fill="#e8b923" font-size="15"><text x="4" y="22">✦</text><text x="84" y="20">✦</text><text x="90" y="60" font-size="11">✦</text></g></svg>';
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+var box=document.createElement('div');box.id='mk';
+box.innerHTML='<div class="av" title="Klik aku untuk semangat!">'+SV+'<button class="tg" type="button" aria-label="Kecilkan atau besarkan maskot">–</button></div><div class="bb2" role="status" aria-live="polite"></div>';
+document.body.appendChild(box);
+var av=box.querySelector('.av'),bb=box.querySelector('.bb2'),sv=av.querySelector('svg'),tg=box.querySelector('.tg'),ht=0,lastSay=0;
+try{if(localStorage.getItem('mk-mini')=='1'){box.classList.add('mini');tg.textContent='+'}}catch(e){}
+tg.onclick=function(e){e.stopPropagation();var m=box.classList.toggle('mini');tg.textContent=m?'+':'–';try{localStorage.setItem('mk-mini',m?'1':'0')}catch(x){}};
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function say(t,mood,low){var n=Date.now();if(low&&n-lastSay<7000)return;lastSay=n;sv.setAttribute('data-mood',mood||'happy');bb.textContent=t;bb.classList.add('on');clearTimeout(ht);ht=setTimeout(function(){bb.classList.remove('on');sv.setAttribute('data-mood','happy')},7000)}
+var PR=['Mantap! Lanjut terus 👍','Bagus, jawabanmu sudah masuk ✔','Keren, tetap fokus ya!','Terus semangat, kamu pasti bisa 💪','Pelan-pelan tapi pasti ya 😊'];
+var NV=['Baca soalnya baik-baik ya 🔎','Kalau ragu, tandai dulu lalu lanjut 👌','Tarik napas dulu, tenang saja 🌿'];
+var L={on:0,i:-1,ans:-1,fl:{},p50:0,p75:0,res:0};
+function nm(){var n=(S.n||'').trim().split(/\s+/)[0]||'';return n?n.charAt(0).toUpperCase()+n.slice(1).toLowerCase():''}
+av.onclick=function(){try{if(L.on&&S.qs){var n=S.qs.length,un=S.an.filter(function(a){return!a.length}).length;if(un>0&&un<=5)return say('Semangat, tinggal '+un+' soal!','cheer');if(un==0)return say('Semua sudah terjawab. Periksa sekali lagi ya ✅','proud')}}catch(e){}say(pick(PR),'happy')};
+function tick(){try{
+var v4=document.getElementById('v4').classList.contains('on'),v5=document.getElementById('v5').classList.contains('on');
+document.body.classList.toggle('mk-on',v4&&!!S.ok&&!S.fin);
+var old=document.querySelector('.mk-res');if(!v5&&old)old.remove();
+if(v4&&S.ok&&!S.fin){var n=S.qs.length,un=S.an.filter(function(a){return!a.length}).length,ans=n-un,db=(S.db||[]).filter(Boolean).length,pct=ans/n*100;
+if(!L.on){L={on:1,i:S.i,ans:ans,fl:{},p50:pct>=50,p75:pct>=75,res:0};var a=nm();say('Halo'+(a?' '+a:'')+'! Baca soal pelan-pelan, kamu pasti bisa 💪','cheer');return}
+var th=[[600,'Sisa 10 menit! Pastikan semua soal sudah terisi ⏳'],[300,'Sisa 5 menit! Jangan sampai ada yang kosong ya'],[60,'1 menit lagi! Cepat isi yang masih kosong ⚡']];
+for(var k=0;k<th.length;k++){if(S.t>0&&S.t<=th[k][0]&&!L.fl[th[k][0]]){L.fl[th[k][0]]=1;L.fl[th[k][0]+1]=1;for(var j=k+1;j<th.length;j++)L.fl[th[j][0]]=L.fl[th[j][0]];say(th[k][1],'worry');return}}
+if(S.i!==L.i){L.i=S.i;if(un>0&&un<=5)say('Semangat, tinggal '+un+' soal!','cheer');else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(S.i==n-1)say('Ini soal terakhir! Kamu hampir sampai 🏁','cheer');else if(Math.random()<.25)say(pick(NV),'happy',1)}
+if(ans!==L.ans){var up=ans>L.ans;L.ans=ans;if(up){if(!L.p50&&pct>=50){L.p50=1;say('Setengah jalan! Terus lanjut 🔥','proud')}else if(!L.p75&&pct>=75){L.p75=1;say('Tinggal seperempat lagi, semangat! 🚀','cheer')}else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(un<=5)say('Semangat, tinggal '+un+' soal!','cheer');else if(Math.random()<.3)say(pick(PR),'happy',1)}}
+}else{L.on=0;if(v5&&S.fin&&!document.querySelector('.mk-res')){var m=/(\d+)\s+dari\s+(\d+)\s+benar/.exec((document.getElementById('hs')||{}).textContent||'');if(m){var ok=+m[1],t=+m[2],r=ok/t,a=nm(),x,md;
+if(r>=.9){md='proud';x='Luar biasa'+(a?', '+a:'')+'! 🌟 Kamu menguasai materi ini dengan sangat baik.'}
+else if(r>=.75){md='cheer';x='Keren! Hasilnya sangat bagus 🎉 Sedikit lagi menuju sempurna.'}
+else if(r>=.6){md='happy';x='Bagus! Kamu sudah di jalur yang tepat. Pelajari soal yang salah supaya nilainya naik lagi 📈'}
+else if(r>=.4){md='worry';x='Lumayan, masih bisa naik! Pelajari ulang materi yang masih salah, kamu pasti bisa 💪'}
+else{md='sad';x='Jangan berkecil hati ya. Ini baru simulasi, justru di sini kamu tahu apa yang perlu dilatih. Ayo bangkit! 🌱'}
+var d=document.createElement('div');d.className='mk-res';d.innerHTML=SV+'<div>'+esc(x)+'<div style="font-weight:400;font-size:13px;margin-top:4px">'+ok+' dari '+t+' soal benar</div></div>';d.querySelector('svg').setAttribute('data-mood',md);document.querySelector('#v5 h2').after(d)}}}
+}catch(e){}}
+setInterval(tick,400);
 })();
 </script>
 </body></html>
