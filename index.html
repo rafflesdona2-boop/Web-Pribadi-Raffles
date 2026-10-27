@@ -492,14 +492,14 @@ if(location.hash)onhashchange();
 </script>
 <!-- ===== MASKOT "TIKA": penyemangat & reaksi skor ===== -->
 <style>
-#mk{position:fixed;right:14px;bottom:14px;z-index:8;display:none;align-items:flex-end;gap:8px;flex-direction:row-reverse;pointer-events:none}
-body.mk-on #mk{display:flex}body.mk-on #v4.on{margin-bottom:96px}
-#mk .av{position:relative;width:78px;height:78px;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 4px 6px #0003);animation:mkf 3s ease-in-out infinite}
+#mk{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-direction:row-reverse;margin:12px 4% 0;min-height:68px}
+
+#mk .av{position:relative;flex:none;width:64px;height:64px;cursor:pointer;filter:drop-shadow(0 4px 6px #0003);animation:mkf 3s ease-in-out infinite}
 #mk .av svg{width:100%;height:100%;display:block}
 #mk .tg{position:absolute;top:-4px;left:-4px;width:22px;height:22px;border-radius:50%;border:0;background:#0f3b82;color:#fff;font:700 13px/22px sans-serif;padding:0;cursor:pointer;opacity:.85}
-#mk .bb2{pointer-events:auto;max-width:230px;background:#fff;color:#222;border:2px solid #0a7be0;border-radius:14px 14px 4px 14px;padding:9px 12px;margin-bottom:26px;font:600 13px/1.4 "Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 6px 18px #0002;opacity:0;transform:translateY(6px) scale(.96);transition:opacity .25s,transform .25s;visibility:hidden}
+#mk .bb2{max-width:min(380px,calc(100% - 80px));background:#fff;color:#222;border:2px solid #0a7be0;border-radius:14px 14px 4px 14px;padding:9px 12px;font:600 13px/1.4 "Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 6px 18px #0002;opacity:0;transform:translateY(6px) scale(.96);transition:opacity .25s,transform .25s;visibility:hidden}
 #mk .bb2.on{opacity:1;transform:none;visibility:visible}
-#mk.mini .av{width:46px;height:46px}#mk.mini .bb2{display:none}
+#mk.mini{min-height:0}#mk.mini .av{width:44px;height:44px}#mk.mini .bb2{display:none}
 @keyframes mkf{50%{transform:translateY(-5px)}}
 @keyframes mkw{to{transform:rotate(-30deg)}}@keyframes mkw2{to{transform:rotate(30deg)}}
 .mkv .wl,.mkv .wr{transform-box:fill-box;transform-origin:50% 0}
@@ -509,7 +509,7 @@ body.mk-on #mk{display:flex}body.mk-on #v4.on{margin-bottom:96px}
 .mkv[data-mood=happy] [data-m~=happy],.mkv[data-mood=cheer] [data-m~=cheer],.mkv[data-mood=worry] [data-m~=worry],.mkv[data-mood=proud] [data-m~=proud],.mkv[data-mood=sad] [data-m~=sad]{display:inline}
 .mk-res{display:flex;align-items:center;gap:14px;background:#e7f1ff;border:1px solid #bcd5f5;border-radius:12px;padding:12px 16px;margin:10px 0 14px;color:#0f3b82;font-weight:600;line-height:1.45}
 .mk-res svg{width:86px;height:86px;flex:none;animation:mkf 3s ease-in-out infinite}
-@media(max-width:600px){#mk{right:8px;bottom:8px}#mk .av{width:60px;height:60px}#mk .bb2{max-width:185px;font-size:12px}}
+@media(max-width:600px){#mk{margin:10px 2% 0;min-height:60px}#mk .av{width:54px;height:54px}#mk .bb2{font-size:12px;max-width:calc(100% - 66px)}}
 </style>
 <script>
 (function(){
@@ -527,7 +527,7 @@ var SV='<svg class="mkv" data-mood="happy" viewBox="0 0 100 100" xmlns="http://w
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
 var box=document.createElement('div');box.id='mk';
 box.innerHTML='<div class="av" title="Klik aku untuk semangat!">'+SV+'<button class="tg" type="button" aria-label="Kecilkan atau besarkan maskot">–</button></div><div class="bb2" role="status" aria-live="polite"></div>';
-document.body.appendChild(box);
+var nvEl=document.querySelector('#v4 .nv');nvEl.parentNode.insertBefore(box,nvEl);
 var av=box.querySelector('.av'),bb=box.querySelector('.bb2'),sv=av.querySelector('svg'),tg=box.querySelector('.tg'),ht=0,lastSay=0;
 try{if(localStorage.getItem('mk-mini')=='1'){box.classList.add('mini');tg.textContent='+'}}catch(e){}
 tg.onclick=function(e){e.stopPropagation();var m=box.classList.toggle('mini');tg.textContent=m?'+':'–';try{localStorage.setItem('mk-mini',m?'1':'0')}catch(x){}};
