@@ -496,10 +496,8 @@ if(location.hash)onhashchange();
 
 #mk .av{position:relative;flex:none;width:64px;height:64px;cursor:pointer;filter:drop-shadow(0 4px 6px #0003);animation:mkf 3s ease-in-out infinite}
 #mk .av svg{width:100%;height:100%;display:block}
-#mk .tg{position:absolute;top:-4px;left:-4px;width:22px;height:22px;border-radius:50%;border:0;background:#0f3b82;color:#fff;font:700 13px/22px sans-serif;padding:0;cursor:pointer;opacity:.85}
 #mk .bb2{max-width:min(380px,calc(100% - 80px));background:#fff;color:#222;border:2px solid #0a7be0;border-radius:14px 14px 4px 14px;padding:9px 12px;font:600 13px/1.4 "Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 6px 18px #0002;opacity:0;transform:translateY(6px) scale(.96);transition:opacity .25s,transform .25s;visibility:hidden}
 #mk .bb2.on{opacity:1;transform:none;visibility:visible}
-#mk.mini{min-height:0}#mk.mini .av{width:44px;height:44px}#mk.mini .bb2{display:none}
 @keyframes mkf{50%{transform:translateY(-5px)}}
 @keyframes mkw{to{transform:rotate(-30deg)}}@keyframes mkw2{to{transform:rotate(30deg)}}
 .mkv .wl,.mkv .wr{transform-box:fill-box;transform-origin:50% 0}
@@ -526,13 +524,15 @@ var SV='<svg class="mkv" data-mood="happy" viewBox="0 0 100 100" xmlns="http://w
 '<g data-m="cheer proud" fill="#e8b923" font-size="15"><text x="4" y="22">✦</text><text x="84" y="20">✦</text><text x="90" y="60" font-size="11">✦</text></g></svg>';
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
 var box=document.createElement('div');box.id='mk';
-box.innerHTML='<div class="av" title="Klik aku untuk semangat!">'+SV+'<button class="tg" type="button" aria-label="Kecilkan atau besarkan maskot">–</button></div><div class="bb2" role="status" aria-live="polite"></div>';
+box.innerHTML='<div class="av" title="Klik aku untuk semangat!">'+SV+'</div><div class="bb2" role="status" aria-live="polite"></div>';
 var nvEl=document.querySelector('#v4 .nv');nvEl.parentNode.insertBefore(box,nvEl);
-var av=box.querySelector('.av'),bb=box.querySelector('.bb2'),sv=av.querySelector('svg'),tg=box.querySelector('.tg'),ht=0,lastSay=0;
-try{if(localStorage.getItem('mk-mini')=='1'){box.classList.add('mini');tg.textContent='+'}}catch(e){}
-tg.onclick=function(e){e.stopPropagation();var m=box.classList.toggle('mini');tg.textContent=m?'+':'–';try{localStorage.setItem('mk-mini',m?'1':'0')}catch(x){}};
+var av=box.querySelector('.av'),bb=box.querySelector('.bb2'),sv=av.querySelector('svg'),ht=0,lastSay=0;
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
-function say(t,mood,low){var n=Date.now();if(low&&n-lastSay<7000)return;lastSay=n;sv.setAttribute('data-mood',mood||'happy');bb.textContent=t;bb.classList.add('on');clearTimeout(ht);ht=setTimeout(function(){bb.classList.remove('on');sv.setAttribute('data-mood','happy')},7000)}
+var rt=0,ft=0,lastRot='';
+function say(t,mood){clearTimeout(rt);clearTimeout(ht);clearTimeout(ft);bb.classList.remove('on');ft=setTimeout(function(){sv.setAttribute('data-mood',mood||'happy');bb.textContent=t;bb.classList.add('on')},150);ht=setTimeout(function(){sv.setAttribute('data-mood','happy')},6500);rt=setTimeout(rotate,10000)}
+var RT=['Baca soalnya baik-baik ya 🔎','Kalau ragu, tandai dulu lalu lanjut 👌','Tarik napas dulu, tenang saja 🌿','Mantap! Lanjut terus 👍','Terus semangat, kamu pasti bisa 💪','Pelan-pelan tapi pasti ya 😊','Jangan terburu-buru, teliti itu kuncinya 🔑','Jawab yang paling yakin dulu, sisanya belakangan ✨','Percaya diri ya, kamu sudah belajar 🌟','Satu soal sekali, fokus saja 🎯','Periksa lagi hitunganmu sebelum lanjut ✏️','Duduk yang nyaman dan tetap rileks 😌'];
+function fmt(x){var m=Math.floor(x/60),d=x%60;return m+':'+(d<10?'0':'')+d}
+function rotate(){try{if(!(L.on&&S.ok&&!S.fin))return;var n=S.qs.length,un=S.an.filter(function(a){return!a.length}).length,pool=RT.slice(),a=nm(),t;pool.push('Sudah terjawab '+(n-un)+' dari '+n+' soal 📊');if(S.t>0)pool.push('Sisa waktu '+fmt(S.t)+' ⏱️');if(a)pool.push('Semangat, '+a+'! Kamu pasti bisa 💪');do{t=pool[Math.floor(Math.random()*pool.length)]}while(t===lastRot&&pool.length>1);lastRot=t;say(t,'happy')}catch(e){}}
 var PR=['Mantap! Lanjut terus 👍','Bagus, jawabanmu sudah masuk ✔','Keren, tetap fokus ya!','Terus semangat, kamu pasti bisa 💪','Pelan-pelan tapi pasti ya 😊'];
 var NV=['Baca soalnya baik-baik ya 🔎','Kalau ragu, tandai dulu lalu lanjut 👌','Tarik napas dulu, tenang saja 🌿'];
 var L={on:0,i:-1,ans:-1,fl:{},p50:0,p75:0,res:0};
@@ -546,8 +546,8 @@ if(v4&&S.ok&&!S.fin){var n=S.qs.length,un=S.an.filter(function(a){return!a.lengt
 if(!L.on){L={on:1,i:S.i,ans:ans,fl:{},p50:pct>=50,p75:pct>=75,res:0};var a=nm();say('Halo'+(a?' '+a:'')+'! Baca soal pelan-pelan, kamu pasti bisa 💪','cheer');return}
 var th=[[600,'Sisa 10 menit! Pastikan semua soal sudah terisi ⏳'],[300,'Sisa 5 menit! Jangan sampai ada yang kosong ya'],[60,'1 menit lagi! Cepat isi yang masih kosong ⚡']];
 for(var k=0;k<th.length;k++){if(S.t>0&&S.t<=th[k][0]&&!L.fl[th[k][0]]){L.fl[th[k][0]]=1;L.fl[th[k][0]+1]=1;for(var j=k+1;j<th.length;j++)L.fl[th[j][0]]=L.fl[th[j][0]];say(th[k][1],'worry');return}}
-if(S.i!==L.i){L.i=S.i;if(un>0&&un<=5)say('Semangat, tinggal '+un+' soal!','cheer');else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(S.i==n-1)say('Ini soal terakhir! Kamu hampir sampai 🏁','cheer');else if(Math.random()<.25)say(pick(NV),'happy',1)}
-if(ans!==L.ans){var up=ans>L.ans;L.ans=ans;if(up){if(!L.p50&&pct>=50){L.p50=1;say('Setengah jalan! Terus lanjut 🔥','proud')}else if(!L.p75&&pct>=75){L.p75=1;say('Tinggal seperempat lagi, semangat! 🚀','cheer')}else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(un<=5)say('Semangat, tinggal '+un+' soal!','cheer');else if(Math.random()<.3)say(pick(PR),'happy',1)}}
+if(S.i!==L.i){L.i=S.i;if(un>0&&un<=5)say('Semangat, tinggal '+un+' soal!','cheer');else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(S.i==n-1)say('Ini soal terakhir! Kamu hampir sampai 🏁','cheer')}
+if(ans!==L.ans){var up=ans>L.ans;L.ans=ans;if(up){if(!L.p50&&pct>=50){L.p50=1;say('Setengah jalan! Terus lanjut 🔥','proud')}else if(!L.p75&&pct>=75){L.p75=1;say('Tinggal seperempat lagi, semangat! 🚀','cheer')}else if(un==0)say(db?'Semua sudah terjawab! Cek lagi '+db+' soal ragu-ragu ya 🔍':'Semua soal terjawab! Periksa sekali lagi sebelum Selesai ✅','proud');else if(un<=5)say('Semangat, tinggal '+un+' soal!','cheer')}}
 }else{L.on=0;if(v5&&S.fin&&!document.querySelector('.mk-res')){var m=/(\d+)\s+dari\s+(\d+)\s+benar/.exec((document.getElementById('hs')||{}).textContent||'');if(m){var ok=+m[1],t=+m[2],r=ok/t,a=nm(),x,md;
 if(r>=.9){md='proud';x='Luar biasa'+(a?', '+a:'')+'! 🌟 Kamu menguasai materi ini dengan sangat baik.'}
 else if(r>=.75){md='cheer';x='Keren! Hasilnya sangat bagus 🎉 Sedikit lagi menuju sempurna.'}
